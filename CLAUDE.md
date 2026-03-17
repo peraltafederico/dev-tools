@@ -1,44 +1,47 @@
 # CLAUDE.md
 
-## Architecture
+## Project: Dev Tools
 
-Monorepo using pnpm workspaces. Each app in `apps/` is an independent Vite + React + TypeScript project that deploys to its own Cloudflare Pages project.
+Single React app serving all developer utilities at `tools.federicoperalta.com`.
 
+### Architecture
+
+- **Monorepo** with pnpm workspaces, single app at `apps/web`
+- **React Router** for client-side routing (`/`, `/text-compare`, `/json-prettifier`)
+- **Shared Layout** component with nav header across all pages
+- **Dark theme** (#0d1117) consistent everywhere
+
+### Key Files
+
+- `apps/web/src/App.tsx` — Router with all routes
+- `apps/web/src/components/Layout.tsx` — Shared header/nav
+- `apps/web/src/pages/Home.tsx` — Tool grid landing page
+- `apps/web/src/pages/TextCompare.tsx` — Text diff tool (uses `diff` library)
+- `apps/web/src/pages/JsonPrettifier.tsx` — JSON formatter with tree view
+- `apps/web/src/components/JsonTreeView.tsx` — Recursive JSON tree renderer
+
+### Adding a New Tool
+
+1. Create `apps/web/src/pages/NewTool.tsx`
+2. Add route in `apps/web/src/App.tsx`
+3. Add nav link in `apps/web/src/components/Layout.tsx`
+4. Add card in `apps/web/src/pages/Home.tsx`
+
+### Deploy
+
+```bash
+cd apps/web && pnpm run build && npx wrangler pages deploy dist --project-name=dev-tools-landing
 ```
-dev-tools/
-├── package.json          # Workspace root with orchestration scripts
-├── pnpm-workspace.yaml   # Defines apps/* as workspace packages
-├── tsconfig.json         # Shared TypeScript config (apps extend this)
-├── apps/
-│   ├── landing/          # tools.federicoperalta.com
-│   ├── text-compare/     # textcompare.federicoperalta.com
-│   └── json-prettifier/  # jsonprettier.federicoperalta.com
-```
 
-## Conventions
+Cloudflare Pages project: `dev-tools-landing`
+Custom domain: `tools.federicoperalta.com`
 
-- **Styling:** Tailwind CSS v4 via `@tailwindcss/vite` plugin. Dark theme with `#0d1117` background.
-- **TypeScript:** Each app extends root `tsconfig.json`. Strict mode enabled.
-- **Build:** `tsc -b && vite build` per app.
-- **No shared packages yet** — each app is fully independent. Extract shared code to `packages/` if needed later.
+### SPA Routing
 
-## Deployment
+`public/_redirects` handles SPA fallback for Cloudflare Pages (all routes → index.html).
 
-Each app deploys independently to Cloudflare Pages:
+### Dependencies
 
-| App | Pages Project | Domain |
-|-----|--------------|--------|
-| landing | `dev-tools-landing` | tools.federicoperalta.com |
-| text-compare | `text-compare` | textcompare.federicoperalta.com |
-| json-prettifier | `json-prettifier` | jsonprettier.federicoperalta.com |
-
-Deploy command pattern: `pnpm exec wrangler pages deploy dist --project-name=<project>`
-
-## Adding a New Tool
-
-1. Scaffold in `apps/<name>/` with Vite + React + TS + Tailwind v4
-2. Extend root tsconfig: `{ "extends": "../../tsconfig.json", "include": ["src"] }`
-3. Add deploy script to app's package.json
-4. Add root package.json scripts: `build:<name>`, `dev:<name>`, `deploy:<name>`
-5. Update landing page tool list in `apps/landing/src/App.tsx`
-6. Create Cloudflare Pages project and configure domain
+- `diff` — text diffing engine for Text Compare
+- `react-router-dom` — client-side routing
+- Tailwind CSS v4 via `@tailwindcss/vite`

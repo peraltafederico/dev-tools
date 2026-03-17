@@ -18,7 +18,6 @@ function computeSideBySideDiff(left: string, right: string): DiffLine[] {
     const change = lineDiffs[i]
 
     if (!change.added && !change.removed) {
-      // Unchanged lines
       const lines = change.value.replace(/\n$/, '').split('\n')
       for (const line of lines) {
         result.push({
@@ -29,7 +28,6 @@ function computeSideBySideDiff(left: string, right: string): DiffLine[] {
       }
       i++
     } else if (change.removed && i + 1 < lineDiffs.length && lineDiffs[i + 1].added) {
-      // Modified lines - do word-level diff
       const removedLines = change.value.replace(/\n$/, '').split('\n')
       const addedLines = lineDiffs[i + 1].value.replace(/\n$/, '').split('\n')
       const maxLen = Math.max(removedLines.length, addedLines.length)
@@ -39,7 +37,6 @@ function computeSideBySideDiff(left: string, right: string): DiffLine[] {
         const newLine = j < addedLines.length ? addedLines[j] : undefined
 
         if (oldLine !== undefined && newLine !== undefined) {
-          // Both exist - word diff
           const wordDiff = diffChars(oldLine, newLine)
           const leftParts: { text: string; type: 'same' | 'add' | 'del' }[] = []
           const rightParts: { text: string; type: 'same' | 'add' | 'del' }[] = []
@@ -150,7 +147,7 @@ function DiffView({ lines }: { lines: DiffLine[] }) {
     if (type === 'mod') return side === 'left' ? 'text-red-400' : 'text-green-400'
     if (type === 'del') return 'text-red-400'
     if (type === 'add') return 'text-green-400'
-    return 'text-[var(--color-text-muted)]'
+    return 'text-[var(--text-muted)]'
   }
 
   const renderSide = (side: 'left' | 'right') => (
@@ -168,7 +165,7 @@ function DiffView({ lines }: { lines: DiffLine[] }) {
             const prefixColor = data ? getPrefixColor(line.type, side) : ''
             return (
               <tr key={i} className={bg}>
-                <td className="w-[50px] text-right pr-2 pl-2 select-none text-[var(--color-line-num)] border-r border-[var(--color-border)] shrink-0">
+                <td className="w-[50px] text-right pr-2 pl-2 select-none text-[var(--color-line-num)] border-r border-[var(--border)] shrink-0">
                   {data?.num ?? ''}
                 </td>
                 <td className={`w-[20px] text-center select-none ${prefixColor}`}>
@@ -186,15 +183,15 @@ function DiffView({ lines }: { lines: DiffLine[] }) {
   )
 
   return (
-    <div className="flex border border-[var(--color-border)] rounded-lg overflow-hidden">
+    <div className="flex border border-[var(--border)] rounded-lg overflow-hidden">
       {renderSide('left')}
-      <div className="w-px bg-[var(--color-border)]" />
+      <div className="w-px bg-[var(--border)]" />
       {renderSide('right')}
     </div>
   )
 }
 
-export default function App() {
+export default function TextCompare() {
   const [left, setLeft] = useState('')
   const [right, setRight] = useState('')
   const [diffLines, setDiffLines] = useState<DiffLine[]>([])
@@ -218,7 +215,6 @@ export default function App() {
     debounceRef.current = setTimeout(() => runCompare(newLeft, newRight), 300)
   }, [left, right, runCompare])
 
-  // Also compare on mount if there's content
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -238,14 +234,14 @@ export default function App() {
   } : null
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] p-4 md:p-8 max-w-[1600px] mx-auto">
+    <div className="flex-1 p-4 md:p-8 max-w-[1600px] mx-auto w-full">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-[var(--color-text)]">
+        <h1 className="text-xl font-semibold text-[var(--text-primary)]">
           Text Compare
         </h1>
         <button
           onClick={handleClear}
-          className="px-3 py-1.5 text-sm rounded-md border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-text-muted)] transition-colors cursor-pointer"
+          className="px-3 py-1.5 text-sm rounded-md border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--text-secondary)] transition-colors cursor-pointer"
         >
           Clear
         </button>
@@ -253,22 +249,22 @@ export default function App() {
 
       <div className="flex gap-4 mb-6">
         <div className="flex-1 min-w-0">
-          <label className="block text-sm text-[var(--color-text-muted)] mb-1.5">Original</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1.5">Original</label>
           <textarea
             value={left}
             onChange={(e) => handleChange('left', e.target.value)}
             placeholder="Paste original text here..."
-            className="w-full h-48 p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] text-[13px] leading-5 resize-y placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] transition-colors"
+            className="w-full h-48 p-3 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg text-[var(--text-primary)] text-[13px] leading-5 resize-y placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
             spellCheck={false}
           />
         </div>
         <div className="flex-1 min-w-0">
-          <label className="block text-sm text-[var(--color-text-muted)] mb-1.5">Modified</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1.5">Modified</label>
           <textarea
             value={right}
             onChange={(e) => handleChange('right', e.target.value)}
             placeholder="Paste modified text here..."
-            className="w-full h-48 p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] text-[13px] leading-5 resize-y placeholder:text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent)] transition-colors"
+            className="w-full h-48 p-3 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg text-[var(--text-primary)] text-[13px] leading-5 resize-y placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
             spellCheck={false}
           />
         </div>
@@ -278,14 +274,14 @@ export default function App() {
         <div className="flex gap-4 mb-4 text-sm">
           <span className="text-green-400">+{stats.additions} additions</span>
           <span className="text-red-400">−{stats.deletions} deletions</span>
-          <span className="text-[var(--color-text-muted)]">{stats.unchanged} unchanged</span>
+          <span className="text-[var(--text-secondary)]">{stats.unchanged} unchanged</span>
         </div>
       )}
 
       {diffLines.length > 0 && <DiffView lines={diffLines} />}
 
       {!left && !right && (
-        <div className="text-center text-[var(--color-text-muted)] mt-16 text-sm">
+        <div className="text-center text-[var(--text-secondary)] mt-16 text-sm">
           Paste text in both fields to see the diff. Auto-compares as you type.
         </div>
       )}

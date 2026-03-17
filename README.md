@@ -1,61 +1,56 @@
 # Dev Tools
 
-A collection of free developer utilities by [Federico Peralta](https://github.com/peraltafederico).
+A collection of free, fast, and privacy-friendly developer utilities.
 
-## Live Tools
+**Live:** [tools.federicoperalta.com](https://tools.federicoperalta.com)
 
-| Tool | URL | Description |
-|------|-----|-------------|
-| Landing | [tools.federicoperalta.com](https://tools.federicoperalta.com) | Index of all tools |
-| Text Compare | [textcompare.federicoperalta.com](https://textcompare.federicoperalta.com) | Side-by-side text diff with highlighting |
-| JSON Prettifier | [jsonprettier.federicoperalta.com](https://jsonprettier.federicoperalta.com) | Format, validate, and beautify JSON |
+## Tools
 
-## Stack
+- **Text Compare** (`/text-compare`) — Compare two blocks of text side by side with highlighted differences
+- **JSON Prettifier** (`/json-prettifier`) — Format, validate, and beautify JSON with syntax highlighting
 
-- **Runtime:** Vite + React + TypeScript
-- **Styling:** Tailwind CSS v4
-- **Hosting:** Cloudflare Pages
-- **Monorepo:** pnpm workspaces
+## Structure
+
+```
+dev-tools/
+├── apps/
+│   └── web/          # Single React app with all tools
+│       ├── src/
+│       │   ├── App.tsx
+│       │   ├── pages/
+│       │   │   ├── Home.tsx
+│       │   │   ├── TextCompare.tsx
+│       │   │   └── JsonPrettifier.tsx
+│       │   └── components/
+│       │       ├── Layout.tsx
+│       │       └── JsonTreeView.tsx
+│       └── ...
+├── package.json
+└── pnpm-workspace.yaml
+```
 
 ## Development
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Dev all apps
-pnpm run dev
-
-# Dev a specific app
-pnpm run dev:landing
-pnpm run dev:text-compare
-pnpm run dev:json-prettifier
+pnpm dev
 ```
 
-## Build & Deploy
+## Deploy
 
 ```bash
-# Build all
-pnpm run build
-
-# Build specific
-pnpm run build:landing
-
-# Deploy all (builds first)
-pnpm run deploy
-
-# Deploy specific
-pnpm run deploy:landing
-pnpm run deploy:text-compare
-pnpm run deploy:json-prettifier
+pnpm deploy
+# or manually:
+cd apps/web && pnpm run build && npx wrangler pages deploy dist --project-name=dev-tools-landing
 ```
 
-## Adding a New Tool
+Deployed to Cloudflare Pages (`dev-tools-landing` project).
+Custom domain: `tools.federicoperalta.com`
 
-1. Create a new Vite + React + TypeScript app in `apps/<tool-name>/`
-2. Add `tsconfig.json` extending `../../tsconfig.json`
-3. Add a `deploy` script in the app's `package.json` pointing to its Cloudflare Pages project
-4. Add `build:<name>`, `dev:<name>`, and `deploy:<name>` scripts to root `package.json`
-5. Update `apps/landing/src/App.tsx` with the new tool entry
-6. Create the Cloudflare Pages project: `pnpm exec wrangler pages project create <project-name> --production-branch main`
-7. Configure custom domain in Cloudflare dashboard
+## Tech Stack
+
+- React 19 + TypeScript
+- React Router (client-side routing)
+- Tailwind CSS v4
+- Vite 8
+- Cloudflare Pages

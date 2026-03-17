@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { JsonTreeView } from './components/JsonTreeView'
+import { JsonTreeView } from '../components/JsonTreeView'
 
-function App() {
+export default function JsonPrettifier() {
   const [input, setInput] = useState('')
   const [parsed, setParsed] = useState<unknown>(null)
   const [error, setError] = useState<string | null>(null)
@@ -111,40 +111,36 @@ function App() {
   }, [])
 
   return (
-    <div className="h-screen flex flex-col">
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 py-3 border-b" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-secondary)' }}>
-        <div className="flex items-center gap-3">
-          <h1 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-            <span style={{ color: 'var(--json-bracket)' }}>{'{ '}</span>
-            JSON Prettier
-            <span style={{ color: 'var(--json-bracket)' }}>{' }'}</span>
-          </h1>
-        </div>
+    <div className="flex-1 flex flex-col">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between px-6 py-3 border-b border-[var(--border)] bg-[var(--bg-secondary)]">
+        <h1 className="text-lg font-semibold text-[var(--text-primary)]">
+          <span style={{ color: 'var(--json-bracket)' }}>{'{ '}</span>
+          JSON Prettifier
+          <span style={{ color: 'var(--json-bracket)' }}>{' }'}</span>
+        </h1>
         <div className="flex items-center gap-2">
           {parsed !== null && (
             <>
               <button
                 onClick={showAll}
-                className="px-3 py-1.5 text-xs rounded-md transition-colors cursor-pointer"
-                style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+                className="px-3 py-1.5 text-xs rounded-md transition-colors cursor-pointer bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border)]"
               >
                 Show All
               </button>
               <button
                 onClick={hideAll}
-                className="px-3 py-1.5 text-xs rounded-md transition-colors cursor-pointer"
-                style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+                className="px-3 py-1.5 text-xs rounded-md transition-colors cursor-pointer bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border)]"
               >
                 Hide All
               </button>
               <button
                 onClick={copyOutput}
-                className="px-3 py-1.5 text-xs rounded-md transition-colors cursor-pointer"
+                className="px-3 py-1.5 text-xs rounded-md transition-colors cursor-pointer border"
                 style={{
                   backgroundColor: copied ? 'var(--success)' : 'var(--bg-tertiary)',
                   color: copied ? '#000' : 'var(--text-secondary)',
-                  border: `1px solid ${copied ? 'var(--success)' : 'var(--border)'}`,
+                  borderColor: copied ? 'var(--success)' : 'var(--border)',
                 }}
               >
                 {copied ? '✓ Copied' : 'Copy Output'}
@@ -152,20 +148,19 @@ function App() {
             </>
           )}
         </div>
-      </header>
+      </div>
 
       {/* Main content */}
       <div className="flex-1 flex min-h-0">
         {/* Input panel */}
-        <div className="w-1/2 flex flex-col border-r" style={{ borderColor: 'var(--border)' }}>
-          <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-secondary)' }}>
-            <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>INPUT</span>
+        <div className="w-1/2 flex flex-col border-r border-[var(--border)]">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--border)] bg-[var(--bg-secondary)]">
+            <span className="text-xs font-medium text-[var(--text-secondary)]">INPUT</span>
             <div className="flex gap-2">
               {parsed !== null && (
                 <button
                   onClick={formatInput}
-                  className="text-xs px-2 py-1 rounded cursor-pointer"
-                  style={{ color: 'var(--accent)' }}
+                  className="text-xs px-2 py-1 rounded cursor-pointer text-[var(--accent)]"
                 >
                   Format
                 </button>
@@ -173,8 +168,7 @@ function App() {
               {input && (
                 <button
                   onClick={clearInput}
-                  className="text-xs px-2 py-1 rounded cursor-pointer"
-                  style={{ color: 'var(--text-muted)' }}
+                  className="text-xs px-2 py-1 rounded cursor-pointer text-[var(--text-muted)]"
                 >
                   Clear
                 </button>
@@ -182,10 +176,8 @@ function App() {
             </div>
           </div>
           <textarea
-            className="flex-1 w-full p-4 resize-none outline-none text-sm leading-relaxed"
+            className="flex-1 w-full p-4 resize-none outline-none text-sm leading-relaxed bg-[var(--bg-primary)] text-[var(--text-primary)]"
             style={{
-              backgroundColor: 'var(--bg-primary)',
-              color: 'var(--text-primary)',
               border: error ? '2px solid var(--error)' : '2px solid transparent',
             }}
             placeholder="Paste your JSON here..."
@@ -202,15 +194,15 @@ function App() {
 
         {/* Output panel */}
         <div className="w-1/2 flex flex-col">
-          <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-secondary)' }}>
-            <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>OUTPUT</span>
+          <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--border)] bg-[var(--bg-secondary)]">
+            <span className="text-xs font-medium text-[var(--text-secondary)]">OUTPUT</span>
             {hiddenPaths.size > 0 && (
-              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              <span className="text-xs text-[var(--text-muted)]">
                 {hiddenPaths.size} field{hiddenPaths.size !== 1 ? 's' : ''} hidden
               </span>
             )}
           </div>
-          <div className="flex-1 overflow-auto p-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
+          <div className="flex-1 overflow-auto p-4 bg-[var(--bg-primary)]">
             {parsed !== null ? (
               <JsonTreeView
                 data={parsed}
@@ -219,7 +211,7 @@ function App() {
               />
             ) : !error && !input ? (
               <div className="flex items-center justify-center h-full">
-                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-sm text-[var(--text-muted)]">
                   Paste JSON on the left to prettify
                 </p>
               </div>
@@ -230,5 +222,3 @@ function App() {
     </div>
   )
 }
-
-export default App

@@ -4,18 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "pnpm -r --parallel run dev",
-    "dev:landing": "pnpm --filter landing run dev",
-    "dev:text-compare": "pnpm --filter text-compare run dev",
-    "dev:json-prettifier": "pnpm --filter json-prettifier run dev",
-    "build": "pnpm -r run build",
-    "build:landing": "pnpm --filter landing run build",
-    "build:text-compare": "pnpm --filter text-compare run build",
-    "build:json-prettifier": "pnpm --filter json-prettifier run build",
-    "deploy": "pnpm run build && pnpm run deploy:landing && pnpm run deploy:text-compare && pnpm run deploy:json-prettifier",
-    "deploy:landing": "pnpm --filter landing run deploy",
-    "deploy:text-compare": "pnpm --filter text-compare run deploy",
-    "deploy:json-prettifier": "pnpm --filter json-prettifier run deploy"
+    "dev": "pnpm --filter web run dev",
+    "build": "pnpm --filter web run build",
+    "preview": "pnpm --filter web run preview",
+    "deploy": "pnpm run build && pnpm --filter web run deploy"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -23,5 +15,8 @@
       "sharp",
       "workerd"
     ]
+  },
+  "devDependencies": {
+    "wrangler": "^4.74.0"
   }
 }
