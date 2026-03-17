@@ -12,7 +12,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--border)] bg-[var(--bg-secondary)]">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 h-14 flex items-center justify-between">
           <Link
             to="/"
             className="text-lg font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors"

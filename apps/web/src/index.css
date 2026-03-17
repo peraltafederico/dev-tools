@@ -30,11 +30,7 @@
   --color-line-num: #484f58;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Reset handled by Tailwind preflight */
 
 body {
   background-color: var(--bg-primary);
