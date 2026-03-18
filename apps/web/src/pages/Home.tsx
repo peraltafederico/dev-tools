@@ -20,7 +20,7 @@ const tools = [
 export default function Home() {
   return (
     <div className="px-6 py-16 sm:px-8 lg:px-8">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-3xl">
         <header className="mb-12 text-center">
           <h1 className="mb-3 text-4xl font-bold tracking-tight text-[var(--text-primary)]">
             Dev Tools
